@@ -1,7 +1,7 @@
 public class ListaEnlazada<T>
 {
-    private Nodo<T> cabeza;
-
+    private Nodo<T>? cabeza = null;
+    
     // Constructor
     public ListaEnlazada()
     {
