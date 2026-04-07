@@ -8,6 +8,7 @@ while (true)
     Console.WriteLine("===== SISTEMA DE ESTUDIANTES =====");
     Console.WriteLine("1. Agregar estudiante");
     Console.WriteLine("2. Listar estudiantes");
+    Console.WriteLine("3. Agregar materia a estudiante");
     Console.WriteLine("0. Salir");
     Console.Write("Seleccione una opción: ");
 
@@ -29,6 +30,43 @@ while (true)
         Console.WriteLine("=== LISTA DE ESTUDIANTES ===");
         estudiantes.Mostrar();
     }
+    else if (opcion == "3")
+{
+    Console.Write("Ingrese el ID del estudiante: ");
+    int idBuscado = int.Parse(Console.ReadLine() ?? "0");
+
+    Nodo<Estudiante>? actual = estudiantes.Cabeza;
+    Estudiante encontrado = null;
+
+    // buscar estudiante
+    while (actual != null)
+    {
+        if (actual.Dato.Id == idBuscado)
+        {
+            encontrado = actual.Dato;
+            break;
+        }
+
+        actual = actual.Siguiente;
+    }
+
+    if (encontrado == null)
+    {
+        Console.WriteLine("Estudiante no encontrado.");
+    }
+    else
+    {
+        Console.Write("Nombre de la materia: ");
+        string nombreMateria = Console.ReadLine() ?? "";
+
+        Console.Write("Nota: ");
+        double nota = double.Parse(Console.ReadLine() ?? "0");
+
+        encontrado.AgregarMateria(nombreMateria, nota);
+
+        Console.WriteLine("Materia agregada correctamente.");
+    }
+}
     else if (opcion == "0")
     {
         Console.WriteLine("Saliendo del sistema...");
