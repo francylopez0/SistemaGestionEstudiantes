@@ -3,7 +3,6 @@ public class Materia
     public string Nombre { get; set; }
     public double Nota { get; set; }
 
-    // Constructor
     public Materia(string nombre, double nota)
     {
         Nombre = nombre;
@@ -12,6 +11,6 @@ public class Materia
 
     public override string ToString()
     {
-        return $"Materia: {Nombre} | Nota: {Nota}";
+        return $"Materia: {Nombre} | Nota: {Nota:F1}";
     }
 }

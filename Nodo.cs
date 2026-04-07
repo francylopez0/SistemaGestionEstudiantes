@@ -5,7 +5,7 @@ public class Nodo<T>
 
     public Nodo(T dato)
     {
-        Dato = dato;  // se guarda el dato recibido
-        Siguiente = null; // inicia sin conexión
+        Dato = dato;
+        Siguiente = null;
     }
 }

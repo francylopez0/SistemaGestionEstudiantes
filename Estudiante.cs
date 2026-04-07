@@ -1,31 +1,69 @@
+using System;
+
 public class Estudiante
 {
-    public int Id { get; set; }
+    public int Codigo { get; set; }
     public string Nombre { get; set; }
+    public string Apellido { get; set; }
+    public string Direccion { get; set; }
+    public string Celular { get; set; }
+    public string Email { get; set; }
 
+    // Cada estudiante tiene su propia lista de materias
     public ListaEnlazada<Materia> Materias { get; set; }
 
-    // Constructor
-    public Estudiante(int id, string nombre)
+    public Estudiante(int codigo, string nombre, string apellido, string direccion, string celular, string email)
     {
-        Id = id;
+        Codigo = codigo;
         Nombre = nombre;
+        Apellido = apellido;
+        Direccion = direccion;
+        Celular = celular;
+        Email = email;
         Materias = new ListaEnlazada<Materia>();
     }
 
-    public void AgregarMateria(string nombre, double nota)
+    public bool AgregarMateria(string nombre, double nota)
     {
-        Materia nueva = new Materia(nombre, nota);
-        Materias.Agregar(nueva);
+        Materia? existente = Materias.Buscar(m =>
+            m.Nombre.Trim().ToLower() == nombre.Trim().ToLower());
+
+        if (existente != null)
+        {
+            return false;
+        }
+
+        Materias.Agregar(new Materia(nombre, nota));
+        return true;
     }
 
-    // Mostrar materias del estudiante
+    public bool ModificarNotaMateria(string nombreMateria, double nuevaNota)
+    {
+        Materia? materia = Materias.Buscar(m =>
+            m.Nombre.Trim().ToLower() == nombreMateria.Trim().ToLower());
+
+        if (materia == null)
+        {
+            return false;
+        }
+
+        materia.Nota = nuevaNota;
+        return true;
+    }
+
+    public bool EliminarMateria(string nombreMateria)
+    {
+        return Materias.Eliminar(m =>
+            m.Nombre.Trim().ToLower() == nombreMateria.Trim().ToLower());
+    }
+
     public void MostrarMaterias()
     {
         Materias.Mostrar();
     }
+
     public override string ToString()
     {
-        return $"ID: {Id} | Nombre: {Nombre}";
+        return $"Código: {Codigo} | Nombre: {Nombre} {Apellido} | Dirección: {Direccion} | Celular: {Celular} | Email: {Email}";
     }
 }

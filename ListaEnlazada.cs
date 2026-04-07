@@ -1,9 +1,22 @@
+using System;
+
 public class ListaEnlazada<T>
 {
-    private Nodo<T>? cabeza = null;
+    private Nodo<T>? cabeza;
 
     public ListaEnlazada()
     {
+        cabeza = null;
+    }
+
+    public Nodo<T>? Cabeza
+    {
+        get { return cabeza; }
+    }
+
+    public bool EstaVacia()
+    {
+        return cabeza == null;
     }
 
     public void Agregar(T dato)
@@ -18,7 +31,7 @@ public class ListaEnlazada<T>
         {
             Nodo<T>? actual = cabeza;
 
-            while (actual.Siguiente != null)
+            while (actual!.Siguiente != null)
             {
                 actual = actual.Siguiente;
             }
@@ -27,7 +40,6 @@ public class ListaEnlazada<T>
         }
     }
 
-    // 👇 ESTE MÉTODO VA AQUÍ DENTRO
     public void Mostrar()
     {
         Nodo<T>? actual = cabeza;
@@ -43,5 +55,51 @@ public class ListaEnlazada<T>
             Console.WriteLine(actual.Dato);
             actual = actual.Siguiente;
         }
+    }
+
+    public bool Eliminar(Func<T, bool> condicion)
+    {
+        if (cabeza == null)
+        {
+            return false;
+        }
+
+        if (condicion(cabeza.Dato))
+        {
+            cabeza = cabeza.Siguiente;
+            return true;
+        }
+
+        Nodo<T>? actual = cabeza;
+
+        while (actual.Siguiente != null)
+        {
+            if (condicion(actual.Siguiente.Dato))
+            {
+                actual.Siguiente = actual.Siguiente.Siguiente;
+                return true;
+            }
+
+            actual = actual.Siguiente;
+        }
+
+        return false;
+    }
+
+    public T? Buscar(Func<T, bool> condicion)
+    {
+        Nodo<T>? actual = cabeza;
+
+        while (actual != null)
+        {
+            if (condicion(actual.Dato))
+            {
+                return actual.Dato;
+            }
+
+            actual = actual.Siguiente;
+        }
+
+        return default;
     }
 }
