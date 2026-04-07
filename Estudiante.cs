@@ -64,6 +64,24 @@ public class Estudiante
 
     public override string ToString()
     {
-        return $"Código: {Codigo} | Nombre: {Nombre} {Apellido} | Dirección: {Direccion} | Celular: {Celular} | Email: {Email}";
+        return $"Código: {Codigo} | Nombre: {Nombre} {Apellido} | Promedio: {CalcularPromedio():F2}";
     }
+    public double CalcularPromedio()
+{
+    Nodo<Materia>? actual = Materias.Cabeza;
+
+    if (actual == null) return 0;
+
+    double suma = 0;
+    int cantidad = 0;
+
+    while (actual != null)
+    {
+        suma += actual.Dato.Nota;
+        cantidad++;
+        actual = actual.Siguiente;
+    }
+
+    return cantidad > 0 ? suma / cantidad : 0;
+}
 }
