@@ -34,29 +34,54 @@ while (true)
         Console.Write("Email: ");
         string email = Console.ReadLine() ?? "";
 
-        if (nombre.Trim() == "" || apellido.Trim() == "")
-        {
-            Console.WriteLine("Nombre y apellido son obligatorios.");
-        }
-        else
-        {
-            Estudiante nuevo = new Estudiante(siguienteCodigo, nombre, apellido, direccion, celular, email);
-            estudiantes.Agregar(nuevo);
-            Console.WriteLine("Estudiante agregado correctamente.");
-            siguienteCodigo++;
-        }
+        Estudiante nuevo = new Estudiante(siguienteCodigo, nombre, apellido, direccion, celular, email);
+        estudiantes.Agregar(nuevo);
+
+        Console.WriteLine("Estudiante agregado correctamente.");
+        siguienteCodigo++;
     }
     else if (opcion == "2")
     {
         Console.WriteLine("=== LISTA DE ESTUDIANTES ===");
-        estudiantes.Mostrar();
+
+        Nodo<Estudiante>? actual = estudiantes.Cabeza;
+
+        if (actual == null)
+        {
+            Console.WriteLine("No hay estudiantes registrados.");
+        }
+        else
+        {
+            while (actual != null)
+            {
+                Console.WriteLine(actual.Dato);
+
+                Nodo<Materia>? materiaActual = actual.Dato.Materias.Cabeza;
+
+                if (materiaActual == null)
+                {
+                    Console.WriteLine("   (Sin materias)");
+                }
+                else
+                {
+                    while (materiaActual != null)
+                    {
+                        Console.WriteLine("   - " + materiaActual.Dato);
+                        materiaActual = materiaActual.Siguiente;
+                    }
+                }
+
+                Console.WriteLine();
+                actual = actual.Siguiente;
+            }
+        }
     }
     else if (opcion == "3")
     {
         Console.Write("Ingrese el código del estudiante: ");
-        int codigoBuscado = LeerEntero();
+        int codigo = LeerEntero();
 
-        Estudiante? encontrado = estudiantes.Buscar(e => e.Codigo == codigoBuscado);
+        Estudiante? encontrado = estudiantes.Buscar(e => e.Codigo == codigo);
 
         if (encontrado == null)
         {
@@ -64,51 +89,31 @@ while (true)
         }
         else
         {
-            Console.WriteLine("=== ESTUDIANTE ENCONTRADO ===");
             Console.WriteLine(encontrado);
         }
     }
     else if (opcion == "4")
     {
         Console.Write("Ingrese el código del estudiante a eliminar: ");
-        int codigoEliminar = LeerEntero();
+        int codigo = LeerEntero();
 
-        Estudiante? encontrado = estudiantes.Buscar(e => e.Codigo == codigoEliminar);
+        bool eliminado = estudiantes.Eliminar(e => e.Codigo == codigo);
 
-        if (encontrado == null)
+        if (eliminado)
         {
-            Console.WriteLine("Estudiante no encontrado.");
+            Console.WriteLine("Estudiante eliminado correctamente.");
         }
         else
         {
-            Console.Write("¿Seguro que desea eliminarlo? (S/N): ");
-            string confirmar = (Console.ReadLine() ?? "").Trim().ToUpper();
-
-            if (confirmar == "S")
-            {
-                bool eliminado = estudiantes.Eliminar(e => e.Codigo == codigoEliminar);
-
-                if (eliminado)
-                {
-                    Console.WriteLine("Estudiante eliminado correctamente.");
-                }
-                else
-                {
-                    Console.WriteLine("No se pudo eliminar el estudiante.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Operación cancelada.");
-            }
+            Console.WriteLine("Estudiante no encontrado.");
         }
     }
     else if (opcion == "5")
     {
         Console.Write("Ingrese el código del estudiante: ");
-        int codigoMateria = LeerEntero();
+        int codigo = LeerEntero();
 
-        Estudiante? estudiante = estudiantes.Buscar(e => e.Codigo == codigoMateria);
+        Estudiante? estudiante = estudiantes.Buscar(e => e.Codigo == codigo);
 
         if (estudiante == null)
         {
@@ -121,14 +126,17 @@ while (true)
     }
     else if (opcion == "0")
     {
-        Console.WriteLine("Saliendo del sistema...");
+        Console.WriteLine("Saliendo...");
         break;
     }
     else
     {
-        Console.WriteLine("Opción no válida.");
+        Console.WriteLine("Opción inválida.");
     }
 }
+
+
+// ================= MÉTODOS =================
 
 int LeerEntero()
 {
@@ -153,15 +161,13 @@ double LeerNota()
 
         if (double.TryParse(texto, out double nota))
         {
-            if (nota >= 0.0 && nota <= 5.0)
-            {
-                return nota;
-            }
+            return nota;
         }
 
-        Console.Write("Ingrese una nota válida entre 0.0 y 5.0: ");
+        Console.Write("Ingrese una nota válida: ");
     }
 }
+
 
 void GestionarMaterias(Estudiante estudiante)
 {
@@ -180,68 +186,61 @@ void GestionarMaterias(Estudiante estudiante)
 
         if (opcion == "1")
         {
-            Console.Write("Nombre de la materia: ");
-            string nombreMateria = Console.ReadLine() ?? "";
+            Console.WriteLine("Seleccione una materia:");
+            Console.WriteLine("1. Matemáticas");
+            Console.WriteLine("2. Inglés");
+            Console.WriteLine("3. Física");
+            Console.WriteLine("4. Programación");
+
+            string op = Console.ReadLine() ?? "";
+
+            string nombreMateria = "";
+
+            if (op == "1") nombreMateria = "Matemáticas";
+            else if (op == "2") nombreMateria = "Inglés";
+            else if (op == "3") nombreMateria = "Física";
+            else if (op == "4") nombreMateria = "Programación";
+            else
+            {
+                Console.WriteLine("Opción inválida.");
+                continue;
+            }
 
             Console.Write("Nota: ");
             double nota = LeerNota();
 
-            if (nombreMateria.Trim() == "")
-            {
-                Console.WriteLine("El nombre de la materia no puede estar vacío.");
-            }
-            else
-            {
-                bool agregada = estudiante.AgregarMateria(nombreMateria, nota);
-
-                if (agregada)
-                {
-                    Console.WriteLine("Materia agregada correctamente.");
-                }
-                else
-                {
-                    Console.WriteLine("Esa materia ya existe para este estudiante.");
-                }
-            }
+            estudiante.AgregarMateria(nombreMateria, nota);
+            Console.WriteLine("Materia agregada correctamente.");
         }
         else if (opcion == "2")
         {
-            Console.WriteLine("=== LISTA DE MATERIAS ===");
             estudiante.MostrarMaterias();
         }
         else if (opcion == "3")
         {
-            Console.Write("Nombre de la materia a modificar: ");
-            string nombreMateria = Console.ReadLine() ?? "";
+            Materia? materia = SeleccionarMateria(estudiante);
 
-            Console.Write("Nueva nota: ");
-            double nuevaNota = LeerNota();
-
-            bool modificada = estudiante.ModificarNotaMateria(nombreMateria, nuevaNota);
-
-            if (modificada)
+            if (materia != null)
             {
+                Console.Write("Nueva nota: ");
+                double nuevaNota = LeerNota();
+
+                materia.Nota = nuevaNota;
                 Console.WriteLine("Nota modificada correctamente.");
-            }
-            else
-            {
-                Console.WriteLine("Materia no encontrada.");
             }
         }
         else if (opcion == "4")
         {
-            Console.Write("Nombre de la materia a eliminar: ");
-            string nombreMateria = Console.ReadLine() ?? "";
+            Materia? materia = SeleccionarMateria(estudiante);
 
-            bool eliminada = estudiante.EliminarMateria(nombreMateria);
+            if (materia != null)
+            {
+                bool eliminada = estudiante.EliminarMateria(materia.Nombre);
 
-            if (eliminada)
-            {
-                Console.WriteLine("Materia eliminada correctamente.");
-            }
-            else
-            {
-                Console.WriteLine("Materia no encontrada.");
+                if (eliminada)
+                {
+                    Console.WriteLine("Materia eliminada correctamente.");
+                }
             }
         }
         else if (opcion == "0")
@@ -250,7 +249,50 @@ void GestionarMaterias(Estudiante estudiante)
         }
         else
         {
-            Console.WriteLine("Opción no válida.");
+            Console.WriteLine("Opción inválida.");
         }
     }
+}
+
+
+Materia? SeleccionarMateria(Estudiante estudiante)
+{
+    Nodo<Materia>? actual = estudiante.Materias.Cabeza;
+
+    if (actual == null)
+    {
+        Console.WriteLine("No hay materias.");
+        return null;
+    }
+
+    int contador = 1;
+
+    Console.WriteLine("Seleccione una materia:");
+
+    while (actual != null)
+    {
+        Console.WriteLine($"{contador}. {actual.Dato.Nombre} | Nota: {actual.Dato.Nota}");
+        actual = actual.Siguiente;
+        contador++;
+    }
+
+    Console.Write("Opción: ");
+    int opcion = LeerEntero();
+
+    actual = estudiante.Materias.Cabeza;
+    contador = 1;
+
+    while (actual != null)
+    {
+        if (contador == opcion)
+        {
+            return actual.Dato;
+        }
+
+        actual = actual.Siguiente;
+        contador++;
+    }
+
+    Console.WriteLine("Opción inválida.");
+    return null;
 }
